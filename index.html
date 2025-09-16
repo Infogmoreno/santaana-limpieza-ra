@@ -1,0 +1,279 @@
+<html>
+  <head>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://supereggbert.github.io/aframe-htmlembed-component/dist/build.js"></script>
+    <script src="https://unpkg.com/super-hands/dist/super-hands.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-physics-system@v4.1.0/dist/aframe-physics-system.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@^4.1.1/dist/aframe-event-set-component.min.js"></script>
+
+    <style>
+            body{
+               width: 98%;
+               height: auto;
+               z-index: 0;
+                }
+
+            #btn_limpieza{
+                  background-color: #be8b77 ;
+                  opacity:1
+                  border: none;
+                  color: white;
+                  padding: 10px;
+                  text-align: center;
+                  text-decoration: none;
+                  display: inline-block;
+                  font-size: 10px;
+                  font-family:Arial;
+                  margin: 15px 5px;
+                  cursor: pointer;
+                  border-radius: 6px;
+                  border: none;
+                  }
+                #btn_limpieza:hover{
+                  opacity:0.5;
+                }
+              #btn_antes{
+                  background-color: #be8b77 ;
+                  opacity:1
+                  border: none;
+                  color: white;
+                  padding: 10px;
+                  text-align: center;
+                  text-decoration: none;
+                  display: inline-block;
+                  font-size: 10px;
+                  font-family:Arial;
+                  margin: 5px 5px;
+                  cursor: pointer;
+                  border-radius: 6px;
+                  border: none;
+                  }
+                #btn_antes:hover{
+                  opacity:0.5;
+                }
+
+            #btn_despues{
+                  background-color: #be8b77 ;
+                  opacity:1
+                  border: none;
+                  color: white;
+                  padding: 10px;
+                  text-align: center;
+                  text-decoration: none;
+                  display: inline-block;
+                  font-size: 10px;
+                  font-family:Arial;
+                  margin: 15px 5px;
+                  cursor: pointer;
+                  border-radius: 6px;
+                  border: none;
+                  }
+                #btn_despues:hover{
+                  opacity:0.5;
+                }
+
+
+            #overlay {
+                display: inline;
+              }
+              /* Show the DOM Overlay element while active (:xr-overlay pseudoclass) */
+              #overlay:xr-overlay {
+                display: inline;
+              }
+
+
+
+
+      .button {
+      	display: inline-block;
+      	border-radius: 4px;
+      	background-color: #B7A786 ;
+      	color: white;
+        font-size: 10px;
+        font-family: Roboto;
+        padding: 13px;
+        margin: 4px;
+        width: 40px;
+        height: 20px;
+
+      }
+      .button:hover{
+
+      	opacity: 0.4;
+      }
+    
+    </style>
+    <script>
+      /* global AFRAME */
+      AFRAME.registerComponent("play-on-click", {
+        init: function () {
+          this.onClick = this.onClick.bind(this);
+        },
+        play: function () {
+          document.querySelector('#btn_limpieza').addEventListener("click", this.onClick);
+        },
+        pause: function () {
+          document.querySelector('#btn_antes').removeEventListener("click", this.onClick);          
+        },
+        onClick: function (evt) {
+          var videoEl = this.el.getAttribute("material").src;
+          if (!videoEl) {
+            return;
+          }
+          this.el.object3D.visible = true;
+          videoEl.play();
+        },
+      });
+    </script>
+  </head>
+  <body>
+    <a-scene
+      renderer="antialias: true;
+                   colorManagement: true;
+                   sortObjects: true;
+                   logarithmicDepthBuffer: true;
+                   physicallyCorrectLights: false;
+                   toneMapping: AgX;
+                   maxCanvasWidth: 1680;
+                   maxCanvasHeight: 1050;
+                   exposure: 1"
+      light="defaultLightsEnabled: false"     
+      webxr="requiredFeatures: hit-test,local-floor;
+                optionalFeatures: dom-overlay,unbounded;
+                overlayElement: #overlay;"
+      shadow="type: pcfsoft"
+     reflection="directionalLight:#light_directional"
+     
+      ar-cursor>
+      <a-entity cursor="rayorigin: mouse;" raycaster="objects: [button];"></a-entity>
+      
+      <a-assets>       
+        <video
+          id="videolimpieza"
+          src="assets/Limpieza_comparat_Angel_Cabeza.mp4"          
+        ></video>
+        <img id="cuadro_antes"
+          src="assets/AngelCabeza_limpieza_inicial_1.jpg">
+        <img id="cuadro_reintegrado"
+          src="assets/AngelCabeza_limpieza_reintegrado_1.jpg"/>  
+       
+      </a-assets>
+
+      <a-entity id="grupocuadro"> 
+         
+          <a-entity 
+            id="Cuadroantes"
+            geometry="primitive: plane; height: 0.825; width: 1"
+            material="shader: flat; src: #cuadro_antes"
+            position="0 1.55 -1.2"
+            scale="1 1 1"
+            visible="false">
+          </a-entity>
+            <a-entity 
+            id="Cuadrodespues"
+            geometry="primitive: plane; height: 0.825; width: 1"
+            material="shader: flat; src: #cuadro_reintegrado"
+            position="0 1.55 -1.2"
+            scale="1 1 1"
+            visible="false">
+          </a-entity>        
+      </a-entity>      
+      <a-video 
+        id="videocuadro"
+        src="#videolimpieza"
+        position="0 1.55 -1.215"
+        height="0.824"
+        width="1"        
+        material="opacity:1"
+      ></a-video>
+     </a-entity>
+
+      <a-entity
+        id="light_ambient"
+        light="type: hemisphere; intensity:0.2"
+        position="0 0 0"
+      ></a-entity>
+      <a-entity
+        id="light_directional"
+        light="type: directional; target:#videocuadro; intensity: 2; castShadow: true"
+        position="5.6 5.2 -1"
+        auto-shadow-cam
+      ></a-entity>
+
+      <a-entity 
+        camera 
+        look-controls 
+        position="0 1.6 0">
+        <a-entity
+          cursor="fuse: true; fuseTimeout: 500; rayorigin: mouse"
+          position="0 0 -0.3"
+          geometry="primitive: ring; radiusInner: 0.002; radiusOuter: 0.003"
+          material="color: red; shader: flat; opacity: 0"
+        >
+        </a-entity>
+      </a-entity>
+    </a-scene>
+
+    <div id="overlay">
+      <div
+        id="botones"
+        class="botones"
+        style="
+          position: fixed;
+          bottom: 6%;
+          left: 0;
+          width: 100%;
+          text-align: center;
+          z-index: 10;
+        "
+      >
+        
+        <button id="btn_limpieza" class="boton">comparar</button>
+        <button id="btn_antes" class="boton">previo</button>
+        <button id="btn_despues" class="boton">resultado</button>
+        
+      </div>
+    </div>
+
+    <script>
+      const btn_limpieza = document.querySelector("#btn_limpieza");
+      const btn_antes = document.querySelector("#btn_antes");
+      const btn_despues = document.querySelector("#btn_despues");
+
+      const videolimpieza = document.querySelector("#videolimpieza");      
+      const cuadroantes = document.querySelector("#Cuadroantes");
+      const cuadrodespues = document.querySelector("#Cuadrodespues");
+      const videocuadro = document.querySelector("#videocuadro");
+     
+      btn_limpieza.addEventListener("click", function () {
+        videocuadro.setAttribute("material", "opacity", 1);       
+        videolimpieza.play();       
+        videolimpieza.currentTime = 0;
+        videocuadro.setAttribute("visible", true);
+        cuadroantes.setAttribute("visible", false);
+        cuadrodespues.setAttribute("visible", false);        
+      });
+      btn_antes.addEventListener("click", function (){
+        videocuadro.setAttribute("visible", false);
+        cuadroantes.setAttribute("visible", true);
+        cuadrodespues.setAttribute("visible", false);
+      })
+      btn_despues.addEventListener("click", function (){
+        videocuadro.setAttribute("visible", false);
+        cuadroantes.setAttribute("visible", false);
+        cuadrodespues.setAttribute("visible", true);
+      })
+
+      btn_limpieza.addEventListener("beforexrselect", (e) => {
+        e.preventDefault();
+      });
+       btn_antes.addEventListener("beforexrselect", (e) => {
+        e.preventDefault();
+      });
+       btn_despues.addEventListener("beforexrselect", (e) => {
+        e.preventDefault();
+      });
+    </script>
+  </body>
+</html>
